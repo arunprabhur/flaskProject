@@ -17,16 +17,17 @@ def student():
 
 
 @app.route('/showall')
-def displayall():
-    Data = []
+def showall():
+    Category = []
     with db.connect() as conn:
         # Execute the query and fetch all results
-        tabledata = conn.execute(
+        Categorydata = conn.execute(
             "SELECT Issuetype, IssueDescription FROM Issuetb "
         ).fetchall()
-    for row in tabledata:
-        Data.append({"Issuetype": row[0], "IssueDescription": row[1]})
-    return render_template("showall.html", data=Data)
+    for row in Categorydata:
+        Category.append({"Issue Type": row[0], "Issue Description":row[1]})
+    print(Category)
+    return render_template("showall.html", Category=Category)
 
 
 @app.route('/result', methods=['POST', 'GET'])

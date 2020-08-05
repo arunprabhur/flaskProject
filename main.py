@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def student():
+def index():
     return render_template('student.html')
 
 
@@ -22,11 +22,11 @@ def showall():
     with db.connect() as conn:
         # Execute the query and fetch all results
         Categorydata = conn.execute(
-            "SELECT Issuetype, IssueDescription FROM Issuetb "
+            "SELECT IncidentID, time_created, Issuetype, IssueDescription, status FROM Issuetb "
         ).fetchall()
     for row in Categorydata:
-        Category.append({"Issue Type": row[0], "Issue Description":row[1]})
-    print(Category)
+        Category.append({"IncidentID": "INC" + str(row[0]).zfill(5), "time_created": row[1], "Issue Type": row[2], "Issue Description": row[3], "status": row[4]})
+    #print(Category)
     return render_template("showall.html", Category=Category)
 
 
@@ -34,15 +34,24 @@ def showall():
 def result():
     if request.method == 'POST':
         result = request.form
+        custname = request.form.get("Customer Name")
         Category = request.form.get('Category')
         Description = request.form.get('Description')
 
         stmt = sqlalchemy.text(
-            "INSERT INTO Issuetb (Issuetype, IssueDescription)" " VALUES (:Category, :Description)")
+            "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status)" " VALUES (:custname, :Category, :Description, :status)")
         with db.connect() as conn:
-            conn.execute(stmt, Category=Category, Description=Description)
-
-        return render_template("result.html", result=result)
+            conn.execute(stmt, custname=custname, Category=Category, Description=Description, status='submitted')
+        IncidentID = 0
+        with db.connect() as conn:
+            # Execute the query and fetch all results
+            IncidentID = conn.execute(
+                "SELECT MAX(IncidentID) FROM Issuetb "
+            ).fetchall()
+        #for row in Categorydata:
+            #Category.append({"Issue Type": row[0], "Issue Description": row[1]})
+        IncidentID=IncidentID[0][0]
+        return render_template("result.html", result=result, IncidentID=str(IncidentID).zfill(5))
 
 
 def init_tcp_connection_engine_local():
@@ -169,7 +178,7 @@ def init_unix_connection_engine(db_config):
 
 db = init_tcp_connection_engine_local()
 #enable below in gcp app engine.
-//db = init_connection_engine()
+#db = init_connection_engine()
 
 
 @app.route('/db')
@@ -178,8 +187,10 @@ def create_tables():
     with db.connect() as conn:
         conn.execute(
             "CREATE TABLE IF NOT EXISTS Issuetb "
-            "( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, "
-            "Issuetype CHAR(20) NOT NULL, IssueDescription CHAR(20), PRIMARY KEY (vote_id) );"
+            "( IncidentID int(5) unsigned zerofill not null auto_increment, time_created timestamp NOT NULL,"
+            "CustomerName CHAR(20) NOT NULL DEFAULT 'VIRTUAL AGENT',"
+            "Issuetype CHAR(50) NOT NULL, IssueDescription varchar(500),"
+            "timeofresolved timestamp NULL, status CHAR(50), PRIMARY KEY (IncidentID) );"
         )
     return "Success db"
 

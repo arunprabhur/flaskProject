@@ -212,7 +212,7 @@ def make_openweathermap_request(req):
         current_temp = float(current_temp) - 273.0
         current_temp = int(current_temp)
 
-        speech_response = 'Current temperature in {} is {} Celsius'.format(city, current_temp)
+        speech_response = 'Current temperature in {} is {} Celsius '.format(city, current_temp)
     except Exception as e:
         speech_response = 'Unable to get temperature of {}'.format(city)
 

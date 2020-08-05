@@ -18,7 +18,7 @@ runtime: python37
 # something like https://cloud.google.com/secret-manager/docs/overview to help keep
 # secrets secret.
 env_variables:
-  CLOUD_SQL_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>
-  DB_USER: my-db-user
-  DB_PASS: my-db-pass
-  DB_NAME: my_db
+  CLOUD_SQL_CONNECTION_NAME: ai-neophytes-learning:us-central1:mysql-instance
+  DB_USER: root
+  DB_PASS: root
+  DB_NAME: mysqldb

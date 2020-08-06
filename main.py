@@ -228,10 +228,7 @@ def webhook():
     print("Request:")
     print(json.dumps(req, indent=4))
 
-    res =  {
-        "fulfillmentText": "Sample from Webhook",
-        "source": "Yahoo Weather"
-    }
+    res = make_udpatedb_request()
 
     res = json.dumps(res, indent=4)
     r = make_response(res)
@@ -239,28 +236,32 @@ def webhook():
     return r
 
 
-def make_openweathermap_request(req):
+def make_udpatedb_request(req):
     result = req.get("queryResult")
     parameters = result.get("parameters")
-    city = parameters.get("geo-city")
-    if city is None:
-        return None
+    custname = parameters.get("name")
+    Category = "Need to update"
+    aano = parameters.get("aadharNum")
+    Description = parameters.get("issueDesc")
 
-    print('https://api.openweathermap.org/data/2.5/weather?q={}&appid=4caf7420789e9f763a81fbc58dc34e31'.format(city))
+    stmt = sqlalchemy.text(
+        "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status, aadharnumber)" "VALUES ("
+        ":custname, :Category, :Description, :status, :aano)")
 
-    try:
-        r = core_requests.get(
-            'https://api.openweathermap.org/data/2.5/weather?q={}&appid=4caf7420789e9f763a81fbc58dc34e31'.format(city))
-        current_temp = r.json()['main']['temp']
-        current_temp = float(current_temp) - 273.0
-        current_temp = int(current_temp)
+    with db.connect() as conn:
+        conn.execute(stmt, custname=custname, Category=Category, Description=Description,
+                     status='submitted', aano=aano)
 
-        speech_response = 'Current temperature in {} is {} Celsius '.format(city, current_temp)
-    except Exception as e:
-        speech_response = 'Unable to get temperature of {}'.format(city)
+    with db.connect() as conn:
+        # Execute the query and fetch all results
+        IncidentID = conn.execute(
+            "SELECT MAX(IncidentID) FROM Issuetb "
+        ).fetchall()
+    # for row in Categorydata:
+    # Category.append({"Issue Type": row[0], "Issue Description": row[1]})
 
     return {
-        "fulfillmentText": speech_response,
+        "fulfillmentText": str(IncidentID),
         "source": "Yahoo Weather"
     }
 

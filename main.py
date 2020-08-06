@@ -228,7 +228,10 @@ def webhook():
     print("Request:")
     print(json.dumps(req, indent=4))
 
-    res = make_openweathermap_request(req)
+    res =  {
+        "fulfillmentText": "Sample from Webhook",
+        "source": "Yahoo Weather"
+    }
 
     res = json.dumps(res, indent=4)
     r = make_response(res)

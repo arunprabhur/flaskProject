@@ -18,7 +18,7 @@ body {
 }
 
 /* Full-width input fields */
-input[type=text], input[type=password] {
+input[type=text], input[type=password] , select{
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -73,19 +73,23 @@ a {
     <p>Please fill in below details & submit to raise issue.</p>
     <hr>
 
-    <label for="Customer Name"><b>Customer Name<</b></label>
+    <label for="Customer Name"><b>Customer Name</b></label>
     <input type="text" placeholder="Customer Name" name="Customer Name" id="Customer Name" required>
-    <label for="Aadhar Number"><b>Aadhar Number<</b></label>
+    <label for="Aadhar Number"><b>Aadhar Number</b></label>
     <input type="text" placeholder="Aadhar Number" name="Aadhar Number" id="Aadhar Number" required>
     <label for="Category"><b>Category</b></label>
-    <input type="text" placeholder="Category" name="Category" id="Category" required>
-
+              <select autofocus name="Category" id="Category">
+  <option value="clean">Cleanliness</option>
+  <option value="Infrastructure">Infrastructure</option>
+  </select>
+             <br>
     <label for="Description"><b>Description</b></label>
     <input type="text" placeholder="Description" name="Description" id="Description" required>
 
     <button type="submit" class="submit">Raise Issue</button>
-  </div>
 
+              <a href="https://console.dialogflow.com/api-client/demo/embedded/52caa02e-f4f2-4c6d-8949-3dbb1abee88b">Visit our Virtual Agent for assistance</a><br>
+  </div>
       </form>
 
 

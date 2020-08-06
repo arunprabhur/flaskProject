@@ -204,6 +204,8 @@ def create_tables():
 def searchresult():
     Incident = []
     IncidentID = request.args.get("IncidentID")
+    if (len(IncidentID) >3):
+        IncidentID = IncidentID[3:]
     #IncidentID =1
     with db.connect() as conn:
         # Execute the query and fetch all results

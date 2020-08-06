@@ -221,6 +221,7 @@ def searchresult():
 def search():
     return render_template("search.html")
 
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     req = request.get_json(silent=True, force=True)
@@ -228,7 +229,7 @@ def webhook():
     print("Request:")
     print(json.dumps(req, indent=4))
 
-    res = make_udpatedb_request()
+    res = make_udpatedb_request(req)
 
     res = json.dumps(res, indent=4)
     r = make_response(res)
@@ -257,8 +258,8 @@ def make_udpatedb_request(req):
         IncidentID = conn.execute(
             "SELECT MAX(IncidentID) FROM Issuetb "
         ).fetchall()
-    # for row in Categorydata:
-    # Category.append({"Issue Type": row[0], "Issue Description": row[1]})
+
+    IncidentID = IncidentID[0][0]
 
     return {
         "fulfillmentText": "Thanks for raising issue, please find incident for reference " + str(IncidentID),

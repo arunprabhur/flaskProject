@@ -261,7 +261,7 @@ def make_udpatedb_request(req):
     # Category.append({"Issue Type": row[0], "Issue Description": row[1]})
 
     return {
-        "fulfillmentText": str(IncidentID),
+        "fulfillmentText": "Thanks for raising issue, please find incident for reference " + str(IncidentID),
         "source": "Yahoo Weather"
     }
 

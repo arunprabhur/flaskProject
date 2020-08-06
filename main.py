@@ -56,7 +56,7 @@ def result():
         #for row in Categorydata:
             #Category.append({"Issue Type": row[0], "Issue Description": row[1]})
         IncidentID=IncidentID[0][0]
-        return render_template("result.html", result=result, IncidentID=str(IncidentID).zfill(5))
+        return render_template("result.html", result=result, IncidentID=str(IncidentID).zfill(7))
 
 
 def init_tcp_connection_engine_local():
@@ -226,8 +226,8 @@ def search():
 def webhook():
     req = request.get_json(silent=True, force=True)
 
-    print("Request:")
-    print(json.dumps(req, indent=4))
+    #print("Request:")
+    #print(json.dumps(req, indent=4))
 
     res = make_udpatedb_request(req)
 
@@ -240,10 +240,10 @@ def webhook():
 def make_udpatedb_request(req):
     result = req.get("queryResult")
     parameters = result.get("parameters")
-    custname = parameters.get("name")
-    Category = "Need to update"
-    aano = parameters.get("aadharNum")
     Description = parameters.get("issueDesc")
+    custname = "VA"
+    Category = "Need to update"
+    aano = "test"
 
     stmt = sqlalchemy.text(
         "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status, aadharnumber)" "VALUES ("
@@ -262,8 +262,8 @@ def make_udpatedb_request(req):
     IncidentID = IncidentID[0][0]
 
     return {
-        "fulfillmentText": "Thanks for raising issue, please find incident for reference " + str(IncidentID),
-        "source": "Yahoo Weather"
+        "fulfillmentText": "Thanks for raising issue, please find incident for reference " + "INC" + str(IncidentID).zfill(7),
+        "source": "AI NEOPHYTES WEB SERVICE"
     }
 
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Incident Details</title>
+
+</head>
+<body>
+<table border = 1>
+            <tr>
+                <th>IncidentID</th>
+                <th>creation time</th>
+               <th> Category </th>
+               <th> Description</th>
+                <th>Status</th>
+            </tr>
+         {% for Row in Incident %}
+             <tr>
+             {% for Item in Row.values() %}
+             <td>{{ Item }} </td>
+             {% endfor %}
+             </tr>
+         {% endfor %}
+      </table>
+</body>
+</html>

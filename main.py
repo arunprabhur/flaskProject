@@ -25,7 +25,7 @@ def showall():
             "SELECT IncidentID, time_created, Issuetype, IssueDescription, status FROM Issuetb "
         ).fetchall()
     for row in Categorydata:
-        Category.append({"IncidentID": "INC" + str(row[0]).zfill(5), "time_created": row[1], "Issue Type": row[2], "Issue Description": row[3], "status": row[4]})
+        Category.append({"IncidentID": "INC" + str(row[0]).zfill(7), "time_created": row[1], "Issue Type": row[2], "Issue Description": row[3], "status": row[4]})
     #print(Category)
     return render_template("showall.html", Category=Category)
 
@@ -35,13 +35,18 @@ def result():
     if request.method == 'POST':
         result = request.form
         custname = request.form.get("Customer Name")
+        aadharnumber = request.form.get("Aadhar Number")
         Category = request.form.get('Category')
         Description = request.form.get('Description')
 
         stmt = sqlalchemy.text(
-            "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status)" " VALUES (:custname, :Category, :Description, :status)")
+            "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status, aadharnumber)" "VALUES ("
+            ":custname, :Category, :Description, :status, :aano)")
+
         with db.connect() as conn:
-            conn.execute(stmt, custname=custname, Category=Category, Description=Description, status='submitted')
+            conn.execute(stmt, custname=custname, Category=Category, Description=Description,
+                         status='submitted', aano=aadharnumber )
+
         IncidentID = 0
         with db.connect() as conn:
             # Execute the query and fetch all results
@@ -187,13 +192,32 @@ def create_tables():
     with db.connect() as conn:
         conn.execute(
             "CREATE TABLE IF NOT EXISTS Issuetb "
-            "( IncidentID int(5) unsigned zerofill not null auto_increment, time_created timestamp NOT NULL,"
+            "( IncidentID int(7) unsigned zerofill not null auto_increment, time_created timestamp NOT NULL,"
             "CustomerName CHAR(20) NOT NULL DEFAULT 'VIRTUAL AGENT',"
             "Issuetype CHAR(50) NOT NULL, IssueDescription varchar(500),"
-            "timeofresolved timestamp NULL, status CHAR(50), PRIMARY KEY (IncidentID) );"
+            "timeofresolved timestamp NULL, status CHAR(50), aadharnumber CHAR(50), PRIMARY KEY (IncidentID) );"
         )
     return "Success db"
 
+
+@app.route("/searchresult")
+def searchresult():
+    Incident = []
+    IncidentID = request.form.get("IncidentID")
+    #IncidentID =1
+    with db.connect() as conn:
+        # Execute the query and fetch all results
+        IncidentDetails = conn.execute(
+            "SELECT IncidentID, time_created, Issuetype, IssueDescription, status FROM Issuetb WHERE IncidentID=" + str(IncidentID)
+        ).fetchall()
+    for row in IncidentDetails:
+       Incident.append({"IncidentID": "INC" + str(row[0]).zfill(7), "time_created": row[1],
+                        "Issue Type": row[2], "Issue Description": row[3], "status": row[4]})
+    return render_template("searchresult.html", Incident=Incident)
+
+@app.route('/search')
+def search():
+    return render_template("search.html")
 
 @app.route('/webhook', methods=['POST'])
 def webhook():

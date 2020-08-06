@@ -203,7 +203,7 @@ def create_tables():
 @app.route("/searchresult")
 def searchresult():
     Incident = []
-    IncidentID = request.form.get("IncidentID")
+    IncidentID = request.args.get("IncidentID")
     #IncidentID =1
     with db.connect() as conn:
         # Execute the query and fetch all results

@@ -25,8 +25,9 @@ def showall():
             "SELECT IncidentID, time_created, Issuetype, IssueDescription, status FROM Issuetb "
         ).fetchall()
     for row in Categorydata:
-        Category.append({"IncidentID": "INC" + str(row[0]).zfill(7), "time_created": row[1], "Issue Type": row[2], "Issue Description": row[3], "status": row[4]})
-    #print(Category)
+        Category.append({"IncidentID": "INC" + str(row[0]).zfill(7), "time_created": row[1], "Issue Type": row[2],
+                         "Issue Description": row[3], "status": row[4]})
+    # print(Category)
     return render_template("showall.html", Category=Category)
 
 
@@ -45,7 +46,7 @@ def result():
 
         with db.connect() as conn:
             conn.execute(stmt, custname=custname, Category=Category, Description=Description,
-                         status='submitted', aano=aadharnumber )
+                         status='submitted', aano=aadharnumber)
 
         IncidentID = 0
         with db.connect() as conn:
@@ -53,9 +54,9 @@ def result():
             IncidentID = conn.execute(
                 "SELECT MAX(IncidentID) FROM Issuetb "
             ).fetchall()
-        #for row in Categorydata:
-            #Category.append({"Issue Type": row[0], "Issue Description": row[1]})
-        IncidentID=IncidentID[0][0]
+        # for row in Categorydata:
+        # Category.append({"Issue Type": row[0], "Issue Description": row[1]})
+        IncidentID = IncidentID[0][0]
         return render_template("result.html", result=result, IncidentID=str(IncidentID).zfill(7))
 
 
@@ -182,8 +183,10 @@ def init_unix_connection_engine(db_config):
 
 
 db = init_tcp_connection_engine_local()
-#enable below in gcp app engine.
-#db = init_connection_engine()
+
+
+# enable below in gcp app engine.
+# db = init_connection_engine()
 
 
 @app.route('/db')
@@ -204,18 +207,20 @@ def create_tables():
 def searchresult():
     Incident = []
     IncidentID = request.args.get("IncidentID")
-    if (len(IncidentID) >3):
+    if (len(IncidentID) > 3):
         IncidentID = IncidentID[3:]
-    #IncidentID =1
+    # IncidentID =1
     with db.connect() as conn:
         # Execute the query and fetch all results
         IncidentDetails = conn.execute(
-            "SELECT IncidentID, time_created, Issuetype, IssueDescription, status FROM Issuetb WHERE IncidentID=" + str(IncidentID)
+            "SELECT IncidentID, time_created, Issuetype, IssueDescription, status FROM Issuetb WHERE IncidentID=" + str(
+                IncidentID)
         ).fetchall()
     for row in IncidentDetails:
-       Incident.append({"IncidentID": "INC" + str(row[0]).zfill(7), "time_created": row[1],
-                        "Issue Type": row[2], "Issue Description": row[3], "status": row[4]})
+        Incident.append({"IncidentID": "INC" + str(row[0]).zfill(7), "time_created": row[1],
+                         "Issue Type": row[2], "Issue Description": row[3], "status": row[4]})
     return render_template("searchresult.html", Incident=Incident)
+
 
 @app.route('/search')
 def search():
@@ -226,8 +231,8 @@ def search():
 def webhook():
     req = request.get_json(silent=True, force=True)
 
-    #print("Request:")
-    #print(json.dumps(req, indent=4))
+    # print("Request:")
+    # print(json.dumps(req, indent=4))
 
     res = make_udpatedb_request(req)
 
@@ -239,11 +244,13 @@ def webhook():
 
 def make_udpatedb_request(req):
     result = req.get("queryResult")
-    parameters = result.get("parameters")
+    outputContext = result.get("outputContexts")
+    print(outputContext[0])
+    parameters = outputContext[0].get("parameters")
     Description = parameters.get("issueDesc")
-    custname = "VA"
+    custname = parameters.get("name")
     Category = "Need to update"
-    aano = "test"
+    aano = parameters.get("aadharNum")
 
     stmt = sqlalchemy.text(
         "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status, aadharnumber)" "VALUES ("
@@ -262,7 +269,8 @@ def make_udpatedb_request(req):
     IncidentID = IncidentID[0][0]
 
     return {
-        "fulfillmentText": "Thanks for raising issue, please find incident for reference " + "INC" + str(IncidentID).zfill(7),
+        "fulfillmentText": "Thanks for raising issue, please find incident for reference " + "INC" + str(
+            IncidentID).zfill(7),
         "source": "AI NEOPHYTES WEB SERVICE"
     }
 

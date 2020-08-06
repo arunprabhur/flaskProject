@@ -1,12 +1,13 @@
 from __future__ import print_function
-from urllib.parse import urlparse, urlencode
-from urllib.request import urlopen, Request
-from urllib.error import HTTPError
 from flask import Flask, render_template, request, make_response
 import sqlalchemy
 import json
 import os
-import requests as core_requests
+import pickle
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
 
 app = Flask(__name__)
 
@@ -57,6 +58,7 @@ def result():
         # for row in Categorydata:
         # Category.append({"Issue Type": row[0], "Issue Description": row[1]})
         IncidentID = IncidentID[0][0]
+
         return render_template("result.html", result=result, IncidentID=str(IncidentID).zfill(7))
 
 
@@ -267,9 +269,26 @@ def make_udpatedb_request(req):
         ).fetchall()
 
     IncidentID = IncidentID[0][0]
-
+    filename = 'hackathon_model.sav'
+    loaded_model1 = pickle.load(open(filename, 'rb'))
+    data = np.array([Description])
+    inputdata = pd.Series(data)
+    loaded_vectorizer = pickle.load(open('vectorizer.pickle', 'rb'))
+    X_test_dtm = loaded_vectorizer.transform(inputdata)
+    Prediction = loaded_model1.predict(X_test_dtm)
+    print(Prediction[0])
+    if Prediction[0] == 11:
+        text = "Cleanliness & Low Importance"
+    elif Prediction[0] == 12:
+        text = "Cleanliness & High Importance"
+    elif Prediction[0] == 21:
+        text = "Infrastructure & Low Importance"
+    elif Prediction[0] == 22:
+        text = "Infrastructure & High Importance"
+    else:
+        text = " Unknown Category"
     return {
-        "fulfillmentText": "Thanks for raising issue, please find incident for reference " + "INC" + str(
+        "fulfillmentText": text + " Thanks for raising issue, please find incident for reference " + "INC" + str(
             IncidentID).zfill(7),
         "source": "AI NEOPHYTES WEB SERVICE"
     }

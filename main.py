@@ -6,6 +6,8 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
 
 app = Flask(__name__)
 

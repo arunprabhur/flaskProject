@@ -1,0 +1,64 @@
+Description,Issuetype,IssueCategory,label
+i have spit problem,spitting,Cleanliness,11
+i have spit,spitting,Cleanliness,11
+someone split in theatre,spitting,Cleanliness,11
+smoking,smoking,Cleanliness,11
+somebody spit, spitting,Cleanliness,11
+I have found littered ,unclean, Cleanliness,11
+person smoking in public, smoking, Cleanliness,11
+Dog poop,unclean, Cleanliness,11
+garbage littered, littering, Cleanliness,11
+swamped with garbage, littering, Cleanliness,11
+throwing garbage, littering,Cleanliness,11
+children dirtying walls, littering,Cleanliness,11
+Potholes on road, Potholes, infrastructure,21
+broken pavements, footpath, infrastructure,21
+encroachment on footpath, footpath, infrastructure,21
+encroachment on pavement, footpath, infrastructure,21
+Cutting trees in locality, Trees, infrastructure,21
+Cutting trees near electric poles, Trees, infrastructure,21
+electric wires hanging, infrastructure,infrastructure,21
+Cracks in the road, infrastructure,infrastructure,21
+cracks on footpath, footpath,infrastructure,21
+chemicals spilled on road, unclean,Cleanliness,12
+oil spilled on road, unclean,Cleanliness,12
+Fumigation in society, unclean, Cleanliness,12
+sanitization of soaciety , unclean, Cleanliness,12
+pen borewell in the garden, unclean, infrastructure,22
+cracked road width to 2 feets,cracks, infrastructure,22
+cracks on flyover,cracks, infrastructure,22
+Shaking flyover, shaking, infrastructure,22
+very old building structure, fragile, infrastructure,22
+leaking chemicals from the factory, unclean, Cleanliness,12
+tap water is dirty, unclean, Cleanliness,12
+Sewage is overflowing, unclean, Cleanliness,12
+Sewer is not covered, unclean, Cleanliness,12
+i have spit problem,spitting,Cleanliness,11
+i have spit,spitting,Cleanliness,11
+someone split in theatre,spitting,Cleanliness,11
+smoking,smoking,Cleanliness,11
+somebody spit, spitting,Cleanliness,11
+I have found littered ,unclean, Cleanliness,11
+person smoking in public, smoking, Cleanliness,11
+Dog poop,unclean, Cleanliness,11
+garbage littered, littering, Cleanliness,11
+swamped with garbage, littering, Cleanliness,11
+throwing garbage, littering,Cleanliness,11
+children dirtying walls, littering,Cleanliness,11
+Potholes on road, Potholes, infrastructure,21
+broken pavements, footpath, infrastructure,21
+encroachment on footpath, footpath, infrastructure,21
+Sewage is overflowing, unclean, Cleanliness,12
+Sewer is not covered, unclean, Cleanliness,12
+somebody spit, spitting,Cleanliness,11
+I have found littered ,unclean, Cleanliness,11
+person smoking aspublic, smoking, Cleanliness,11
+cracks on flyover,cracks, infrastructure,22
+Shaking flyover, shaking, infrastructure,22
+very old building structure, fragile, infrastructure,22
+leaking chemicals from the factory, unclean, Cleanliness,12
+tap water as dirty, unclean, Cleanliness,12
+Sewage as overflowing, unclean, Cleanliness,12
+Sewer as not covered, unclean, Cleanliness,12
+road not clear, unclean, Cleanliness,11
+road damaged, cracks,infrastructure,22

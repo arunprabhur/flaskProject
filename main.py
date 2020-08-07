@@ -17,20 +17,47 @@ def index():
     return render_template('student.html')
 
 
-@app.route('/showall')
+@app.route('/dashboard')
 def showall():
     Category = []
     with db.connect() as conn:
         # Execute the query and fetch all results
         Categorydata = conn.execute(
-            "SELECT IncidentID, CustomerName, time_created, Category, Sentiment, IssueDescription, status FROM Issuetb"
+            "SELECT IncidentID, CustomerName, time_created, Category, Sentiment, IssueDescription, status FROM Issuetb "
+            "where Sentiment = 'High Importance' LIMIT 5"
         ).fetchall()
 
     for row in Categorydata:
         Category.append({"IncidentID": "INC" + str(row[0]).zfill(7),"Customer Name": row[1], "time_created": row[2], "Category": row[3],
                          "Sentiment":row[4] ,"Issue Description": row[5], "status": row[6]})
 
-    return render_template("showall.html", Category=Category)
+    with db.connect() as conn:
+        # Execute the query and fetch all results
+        MatrixCL = conn.execute(
+            "SELECT Count(Category) FROM Issuetb where Category = 'Cleanliness' and Sentiment ='Low Importance'"
+        ).fetchall()
+    with db.connect() as conn:
+        # Execute the query and fetch all results
+        MatrixCH = conn.execute(
+            "SELECT Count(Category) FROM Issuetb where Category = 'Cleanliness' and Sentiment ='High Importance'"
+        ).fetchall()
+    with db.connect() as conn:
+        # Execute the query and fetch all results
+        MatrixIL = conn.execute(
+            "SELECT Count(Category) FROM Issuetb where Category = 'Infrastructure' and Sentiment ='Low Importance'"
+        ).fetchall()
+    with db.connect() as conn:
+        # Execute the query and fetch all results
+        MatrixIH = conn.execute(
+            "SELECT Count(Category) FROM Issuetb where Category = 'Infrastructure' and Sentiment ='High Importance'"
+        ).fetchall()
+    MatrixCLval = MatrixCL[0][0]
+    MatrixCHval = MatrixCH[0][0]
+    MatrixILval = MatrixIL[0][0]
+    MatrixIHval = MatrixIH[0][0]
+
+    return render_template("showall.html", Category=Category, MatrixCLval=MatrixCLval,MatrixCHval=MatrixCHval,
+                           MatrixILval=MatrixILval, MatrixIHval=MatrixIHval)
 
 
 @app.route('/result', methods=['POST', 'GET'])

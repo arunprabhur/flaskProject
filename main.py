@@ -23,12 +23,13 @@ def showall():
     with db.connect() as conn:
         # Execute the query and fetch all results
         Categorydata = conn.execute(
-            "SELECT IncidentID, time_created, Issuetype, IssueDescription, status FROM Issuetb "
+            "SELECT IncidentID, CustomerName, time_created, Category, Sentiment, IssueDescription, status FROM Issuetb"
         ).fetchall()
+
     for row in Categorydata:
-        Category.append({"IncidentID": "INC" + str(row[0]).zfill(7), "time_created": row[1], "Issue Type": row[2],
-                         "Issue Description": row[3], "status": row[4]})
-    # print(Category)
+        Category.append({"IncidentID": "INC" + str(row[0]).zfill(7),"Customer Name": row[1], "time_created": row[2], "Category": row[3],
+                         "Sentiment":row[4] ,"Issue Description": row[5], "status": row[6]})
+
     return render_template("showall.html", Category=Category)
 
 
@@ -251,24 +252,9 @@ def make_udpatedb_request(req):
     parameters = outputContext[0].get("parameters")
     Description = parameters.get("issueDesc")
     custname = parameters.get("name")
-    Category = "Need to update"
     aano = parameters.get("aadharNum")
-
-    stmt = sqlalchemy.text(
-        "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status, aadharnumber)" "VALUES ("
-        ":custname, :Category, :Description, :status, :aano)")
-
-    with db.connect() as conn:
-        conn.execute(stmt, custname=custname, Category=Category, Description=Description,
-                     status='submitted', aano=aano)
-
-    with db.connect() as conn:
-        # Execute the query and fetch all results
-        IncidentID = conn.execute(
-            "SELECT MAX(IncidentID) FROM Issuetb "
-        ).fetchall()
-
-    IncidentID = IncidentID[0][0]
+    Category = "Value from User"
+    #Model Prediction
     filename = 'hackathon_model.sav'
     loaded_model1 = pickle.load(open(filename, 'rb'))
     data = np.array([Description])
@@ -279,14 +265,40 @@ def make_udpatedb_request(req):
     print(Prediction[0])
     if Prediction[0] == 11:
         text = "Cleanliness & Low Importance"
+        Category1 = "Cleanliness"
+        Sentiment = "Low Importance"
     elif Prediction[0] == 12:
         text = "Cleanliness & High Importance"
+        Category1 = "Cleanliness"
+        Sentiment = "High Importance"
     elif Prediction[0] == 21:
         text = "Infrastructure & Low Importance"
+        Category1 = "Infrastructure"
+        Sentiment = "Low Importance"
     elif Prediction[0] == 22:
         text = "Infrastructure & High Importance"
+        Category1 = "Infrastructure"
+        Sentiment = "High Importance"
     else:
         text = " Unknown Category"
+
+    stmt = sqlalchemy.text(
+        "INSERT INTO Issuetb (CustomerName, Issuetype, IssueDescription, status, aadharnumber, Category,"
+        "Sentiment,Model_prediction)" "VALUES ("
+        ":custname, :Category, :Description, :status, :aano,:Category1,:Sentiment,:text)")
+
+    with db.connect() as conn:
+        conn.execute(stmt, custname=custname, Category=Category, Description=Description,
+                     status='submitted', aano=aano, Category1=Category1, Sentiment=Sentiment, text=text)
+
+    with db.connect() as conn:
+        # Execute the query and fetch all results
+        IncidentID = conn.execute(
+            "SELECT MAX(IncidentID) FROM Issuetb "
+        ).fetchall()
+
+    IncidentID = IncidentID[0][0]
+
     return {
         "fulfillmentText": text + " Thanks for raising issue, please find incident for reference " + "INC" + str(
             IncidentID).zfill(7),
